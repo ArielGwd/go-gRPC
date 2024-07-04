@@ -1,0 +1,8 @@
+syntax = "proto3";
+package cities;
+option go_package="pb/cities;cities";
+
+message City {
+  int32 id = 1;
+  string name = 2;
+}

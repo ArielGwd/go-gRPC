@@ -1,0 +1,33 @@
+syntax = "proto3";
+package cities;
+
+option go_package = "pb/cities;cities";
+
+import "city_message.proto";
+
+
+message CitiesStream {
+  City city = 1;
+}
+
+message EmptyMessage {}
+
+message Id {
+  int32 id = 1;
+}
+
+message CityInput {
+  string name = 1;
+}
+
+message MyBoolean {
+  bool boolean = 1;
+}
+
+service CitiesService {
+  rpc GetCity(Id) returns (City) {}
+  rpc GetCities(EmptyMessage) returns (stream CitiesStream) {}
+  rpc Create(CityInput) returns (City) {}
+  rpc Update(City) returns (City) {}
+  rpc Delete(Id) returns (MyBoolean) {}
+}
