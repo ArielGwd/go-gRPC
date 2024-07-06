@@ -24,18 +24,24 @@ func (s *City) GetCity(ctx context.Context, in *cities.Id) (*cities.City, error)
 	return &cityModel.Pb, err
 }
 
-// List func
+// fungsi get cities
 func (s *City) GetCities(in *cities.EmptyMessage, stream cities.CitiesService_GetCitiesServer) error {
-	ctx := stream.Context()
+	query := `SELECT id, name FROM cities`
+	row, err := s.DB.Query(query)
+	if err != nil {
+		return err
+	}
 
-	for i := 1; i < 50; i++ {
-		err := contextError(ctx)
+	defer row.Close()
+	for row.Next() {
+		var city cities.City
+		err = row.Scan(&city.Id, &city.Name)
 		if err != nil {
 			return err
 		}
 
 		res := &cities.CitiesStream{
-			City: &cities.City{Id: int32(i), Name: "Jakarta"},
+			City: &city,
 		}
 
 		err = stream.Send(res)
@@ -45,17 +51,6 @@ func (s *City) GetCities(in *cities.EmptyMessage, stream cities.CitiesService_Ge
 	}
 
 	return nil
-}
-
-func contextError(ctx context.Context) error {
-	switch ctx.Err() {
-	case context.Canceled:
-		return status.Error(codes.Canceled, "request is canceled")
-	case context.DeadlineExceeded:
-		return status.Error(codes.DeadlineExceeded, "deadline is exceeded")
-	default:
-		return nil
-	}
 }
 
 func (s *City) Create(ctx context.Context, in *cities.CityInput) (*cities.City, error) {
