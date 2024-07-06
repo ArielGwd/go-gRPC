@@ -10,6 +10,7 @@ type City struct {
 	Pb cities.City
 }
 
+// getCity
 func (c *City) Get(ctx context.Context, db *sql.DB, in *cities.Id) error {
 	c.Pb.Id = 1
 	c.Pb.Name = "Bandung"
