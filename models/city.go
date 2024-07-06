@@ -23,3 +23,20 @@ func (c *City) Get(ctx context.Context, db *sql.DB, in *cities.Id) error {
 
 	return nil
 }
+
+func (c *City) Create(ctx context.Context, db *sql.DB, in *cities.CityInput) error {
+	query := `INSERT INTO cities (name) VALUES ($1) RETURNING id`
+	stmt, err := db.PrepareContext(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	err = stmt.QueryRowContext(ctx, in.Name).Scan(&c.Pb.Id)
+	if err != nil {
+		return err
+	}
+
+	c.Pb.Name = in.Name
+
+	return nil
+}
