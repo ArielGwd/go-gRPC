@@ -24,6 +24,7 @@ func (c *City) Get(ctx context.Context, db *sql.DB, in *cities.Id) error {
 	return nil
 }
 
+// create
 func (c *City) Create(ctx context.Context, db *sql.DB, in *cities.CityInput) error {
 	query := `INSERT INTO cities (name) VALUES ($1) RETURNING id`
 	stmt, err := db.PrepareContext(ctx, query)
@@ -37,6 +38,22 @@ func (c *City) Create(ctx context.Context, db *sql.DB, in *cities.CityInput) err
 	}
 
 	c.Pb.Name = in.Name
+
+	return nil
+}
+
+// delete
+func (c *City) Delete(ctx context.Context, db *sql.DB, in *cities.Id) error {
+	query := `DELETE FROM cities WHERE id = $1`
+	stmt, err := db.PrepareContext(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.ExecContext(ctx, in.Id)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -63,3 +63,12 @@ func (s *City) Create(ctx context.Context, in *cities.CityInput) (*cities.City, 
 	err := cityModel.Create(ctx, s.DB, in)
 	return &cityModel.Pb, err
 }
+
+func (s *City) Delete(ctx context.Context, in *cities.Id) (*cities.MyBoolean, error) {
+	var cityModel models.City
+	err := cityModel.Delete(ctx, s.DB, in)
+	if err != nil {
+		return &cities.MyBoolean{Boolean: false}, err
+	}
+	return &cities.MyBoolean{Boolean: true}, nil
+}
